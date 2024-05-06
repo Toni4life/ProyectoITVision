@@ -1,0 +1,55 @@
+----Guía de Instalación y Configuración del Proyecto ITV----
+
+Requisitos del Sistema
+Node.js (desde Google o el navegador que uséis)
+npm (viene instalado con Node.js)
+Angular CLI
+PostgreSQL
+pgAdmin (opcional para la gestión visual de PostgreSQL)
+
+Instalación de las Herramientas
+1. Node.js y npm
+Visita Node.js y descarga la última versión estable. npm se instalará automáticamente con Node.js.
+
+2. Angular CLI
+Instala Angular CLI globalmente usando npm:
+
+En terminal:
+npm install -g @angular/cli
+
+3. PostgreSQL (16)
+Descarga e instala PostgreSQL desde PostgreSQL Official Site. Durante la instalación, recuerda configurar la contraseña (VAMOS A USAR LA PASS : "Calasparra") para el usuario 'postgres'.
+
+4. pgAdmin4
+Descarga e instala pgAdmin desde pgAdmin Official Site para gestionar tu base de datos PostgreSQL a través de una interfaz gráfica.
+
+Configuración de la Base de Datos
+Usa pgAdmin para crear una nueva base de datos para el proyecto. LLAMADLA: itvdb, luego es hacer click derecho, Backup->Restore-> y seleccionais el sql
+
+Importación del Script de la Base de Datos, adjunto en el repositorio.
+
+Configuración del Proyecto
+Clona el repositorio del proyecto, recomiendo usar GitHub Desktop, es más sencillo
+
+Backend
+Abre en terminal y:
+
+//npm install probad a no hacerlo de primeras ya que he metido los node modules en el repositorio a capón.
+//Esto instalará todas las dependencias necesarias listadas en el archivo package.json.
+
+Para iniciar el servidor del backend, ejecuta:
+
+node server.js
+
+Frontend
+
+Navega al directorio del frontend y ejecuta:
+
+//npm install lo mismo aquí
+//Esto instalará todas las dependencias necesarias para el frontend.
+
+Para iniciar el servidor de desarrollo de Angular, ejecuta:
+
+ng serve
+
+Esto pondrá en marcha el servidor de desarrollo y podrás acceder a la aplicación a través de http://localhost:4200 en tu navegador.
