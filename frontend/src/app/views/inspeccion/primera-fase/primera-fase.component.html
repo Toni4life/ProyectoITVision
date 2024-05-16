@@ -1,0 +1,75 @@
+<!-- primera-fase.component.html -->
+<c-row ngPreserveWhitespaces>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>Datos del Vehículo - 1ª Fase de la Inspección</strong>
+      </c-card-header>
+      <c-card-body>
+        <form [formGroup]="vehiculoForm">
+          <div class="mb-3">
+            <label for="numerobastidor" class="form-label">Número de Bastidor:</label>
+            <input type="text" id="numerobastidor" class="form-control" formControlName="numerobastidor">
+          </div>
+          <div class="mb-3">
+            <label for="marca" class="form-label">Marca:</label>
+            <input type="text" id="marca" class="form-control" formControlName="marca">
+          </div>
+          <div class="mb-3">
+            <label for="modelo" class="form-label">Modelo:</label>
+            <input type="text" id="modelo" class="form-control" formControlName="modelo">
+          </div>
+          <div class="mb-3">
+            <label for="combustible" class="form-label">Combustible:</label>
+            <input type="text" id="combustible" class="form-control" formControlName="combustible">
+          </div>
+          <div class="mb-3">
+            <label for="normativaeuro" class="form-label">Normativa Euro:</label>
+            <input type="text" id="normativaeuro" class="form-control" formControlName="normativaeuro">
+          </div>
+          <div class="mb-3">
+            <label for="aniofabricacion" class="form-label">Año de Fabricación:</label>
+            <input type="text" id="aniofabricacion" class="form-control" formControlName="aniofabricacion">
+          </div>
+          <div class="mb-3">
+            <label for="kilometraje" class="form-label">Kilometraje:</label>
+            <input type="text" id="kilometraje" class="form-control" formControlName="kilometraje">
+          </div>
+
+          <!-- Selector de Grupo de Inspección -->
+          <div class="mb-3">
+            <label for="grupoInspeccion" class="form-label">Grupo de Inspección:</label>
+            <select id="grupoInspeccion" class="form-control" formControlName="grupoInspeccion">
+              <option *ngFor="let grupo of grupos" [value]="grupo.id">{{ grupo.nombre }}</option>
+            </select>
+          </div>
+
+          <!-- Dentro de tu formulario, ajusta el formArrayName a 'subgrupos' -->
+          <div formArrayName="subgrupos">
+            <div *ngFor="let subgrupoControl of subgrupos.controls; let i = index" [formGroupName]="i" class="mb-2">
+              <label>{{ subgrupoControl.get('nombre')?.value }}</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="defecto" value="leve">
+                <label class="form-check-label">Leve</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="defecto" value="grave">
+                <label class="form-check-label">Grave</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="defecto" value="muy grave">
+                <label class="form-check-label">Muy Grave</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <!-- Contenido del div -->
+          </div>
+
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

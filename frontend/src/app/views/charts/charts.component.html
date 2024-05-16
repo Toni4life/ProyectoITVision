@@ -1,0 +1,20 @@
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>{{ title }}</strong>
+      </c-card-header>
+      <c-card-body>
+        <div cListGroup>
+          <a *ngFor="let vehiculo of vehiculos" 
+             href="javascript:void(0)" 
+             (click)="selectVehicle(vehiculo)" 
+             cListGroupItem>
+            {{ vehiculo.numerobastidor }} - {{ vehiculo.marca }} - {{ vehiculo.modelo }} -
+            {{ vehiculo.combustible }} - {{ vehiculo.normativaeuro }} - {{ vehiculo.aniofabricacion }}
+          </a>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

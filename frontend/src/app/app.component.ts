@@ -1,29 +1,33 @@
-import { Component } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { VehicleService } from './vehicle.service';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+
+import { IconSetService } from '@coreui/icons-angular';
+import { iconSubset } from './icons/icon-subset';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  template: '<router-outlet />',
   standalone: true,
-  imports: [CommonModule, HttpClientModule]
+  imports: [RouterOutlet]
 })
-export class AppComponent {
-  title = 'Vehículos Disponibles';
-  vehiculos: any[] = [];
+export class AppComponent implements OnInit {
+  title = 'ITVision';
 
-  constructor(private vehicleService: VehicleService) {}
+  constructor(
+    private router: Router,
+    private titleService: Title,
+    private iconSetService: IconSetService
+  ) {
+    this.titleService.setTitle(this.title);
+    // iconSet singleton
+    this.iconSetService.icons = { ...iconSubset };
+  }
 
-  cargarVehiculos(): void {
-    this.vehicleService.getVehiculos().subscribe({
-      next: (data) => {
-        this.vehiculos = data;
-      },
-      error: (error) => {
-        console.error('Hubo un error!', error);
-        console.log('Mensaje de error:', error.error);
+  ngOnInit(): void {
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+        return;
       }
     });
   }
