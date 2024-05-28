@@ -6,7 +6,7 @@
         <strong>Datos del Vehículo - 1ª Fase de la Inspección</strong>
       </c-card-header>
       <c-card-body>
-        <form [formGroup]="vehiculoForm">
+        <form [formGroup]="vehiculoForm" (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <label for="numerobastidor" class="form-label">Número de Bastidor:</label>
             <input type="text" id="numerobastidor" class="form-control" formControlName="numerobastidor">
@@ -48,6 +48,10 @@
           <div formArrayName="subgrupos">
             <div *ngFor="let subgrupoControl of subgrupos.controls; let i = index" [formGroupName]="i" class="mb-2">
               <label>{{ subgrupoControl.get('nombre')?.value }}</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="defecto" value="n/a">
+                <label class="form-check-label">N/A</label>
+              </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" formControlName="defecto" value="leve">
                 <label class="form-check-label">Leve</label>
