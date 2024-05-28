@@ -1,1 +1,79 @@
-<p>tercera-fase works!</p>
+<!-- segunda-fase.component.html -->
+<c-row>
+    <c-col xs="12">
+        <c-card class="mb-4">
+            <c-card-header>
+                <strong>Prueba de Frenado - Tercera Fase</strong>
+            </c-card-header>
+            <c-card-body>
+                <form [formGroup]="pruebaForm" (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <label for="numerobastidor" class="form-label">Número de Bastidor:</label>
+                        <input type="text" id="numerobastidor" class="form-control" formControlName="numerobastidor">
+                    </div>
+                    <!-- Selector del Eje de Frenado -->
+                    <div class="mb-3">
+                        <label for="frenos" class="form-label">Eje de Frenado:</label>
+                        <select id="frenos" class="form-control" formControlName="frenos">
+                            <option value="Empty">Seleccione un tipo</option>
+                            <option value="EjeDelantero">Eje Delantero</option>
+                            <option value="EjeTrasero">Eje Trasero</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" (click)="iniciarPrueba()" [disabled]="simulando">
+                        Iniciar Prueba de Frenado
+                    </button>
+
+                    <div class="mb-3">
+                        <!-- Contenido del div -->
+                    </div>
+
+                    <!-- Estado de la simulación y resultado de las frenado -->
+                    <div *ngIf="simulando" class="alert alert-info mt-3">
+                        Simulación en progreso... Tiempo restante: {{ cuentaAtras }} segundos
+                    </div>
+
+                    <div *ngIf="frenado && !simulando" class="alert alert-success mt-3">
+                        Resultado de Frenado: {{ frenado }} unidades
+                    </div>
+
+                    <!-- Selector de Grupo de Inspección se mueve aquí para aparecer después del botón -->
+                    <div class="mb-3">
+                        <label for="grupoInspeccion" class="form-label">Grupo de Inspección:</label>
+                        <select id="grupoInspeccion" class="form-control" formControlName="grupoInspeccion">
+                            <option *ngFor="let grupo of grupos" [value]="grupo.id">{{ grupo.nombre }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Dentro de tu formulario, ajusta el formArrayName a 'subgrupos' -->
+                    <div formArrayName="subgrupos">
+                        <div *ngFor="let subgrupoControl of subgrupos.controls; let i = index" [formGroupName]="i"
+                            class="mb-2">
+                            <label>{{ subgrupoControl.get('nombre')?.value }}</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="defecto" value="n/a">
+                                <label class="form-check-label">N/A</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="defecto" value="leve">
+                                <label class="form-check-label">Leve</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="defecto" value="grave">
+                                <label class="form-check-label">Grave</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="defecto"
+                                    value="muy grave">
+                                <label class="form-check-label">Muy Grave</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </c-card-body>
+        </c-card>
+    </c-col>
+</c-row>
