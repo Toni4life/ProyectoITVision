@@ -6,12 +6,16 @@
                 <strong>Prueba de Emisiones - Segunda Fase</strong>
             </c-card-header>
             <c-card-body>
-                <form [formGroup]="pruebaForm">
+                <form [formGroup]="pruebaForm" (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <label for="numerobastidor" class="form-label">Número de Bastidor:</label>
+                        <input type="text" id="numerobastidor" class="form-control" formControlName="numerobastidor">
+                    </div>
                     <!-- Selector de Tipo de Combustible -->
                     <div class="mb-3">
                         <label for="combustible" class="form-label">Tipo de Combustible:</label>
                         <select id="combustible" class="form-control" formControlName="combustible">
-                            <option value="">Seleccione un tipo</option>
+                            <option value="Empty">Seleccione un tipo</option>
                             <option value="Gasolina">Gasolina</option>
                             <option value="Diésel">Diésel</option>
                         </select>
@@ -48,6 +52,10 @@
                             class="mb-2">
                             <label>{{ subgrupoControl.get('nombre')?.value }}</label>
                             <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="defecto" value="n/a">
+                                <label class="form-check-label">N/A</label>
+                            </div>
+                            <div class="form-check">
                                 <input class="form-check-input" type="radio" formControlName="defecto" value="leve">
                                 <label class="form-check-label">Leve</label>
                             </div>
@@ -62,6 +70,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </form>
             </c-card-body>
         </c-card>
