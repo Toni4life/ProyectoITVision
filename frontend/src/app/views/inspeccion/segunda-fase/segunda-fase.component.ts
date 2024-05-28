@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { SegundafaseService } from '../../../services/segundafase.service';
 
 import {
   RowComponent,
@@ -10,6 +11,7 @@ import {
   CardBodyComponent,
   ButtonDirective
 } from '@coreui/angular';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-segunda-fase',
@@ -19,6 +21,7 @@ import {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    HttpClientModule,
     RowComponent,
     ColComponent,
     CardComponent,
@@ -36,14 +39,17 @@ export class SegundaFaseComponent implements OnInit {
     { id: 1, nombre: 'Grupo 5: Emisiones Contaminantes', subgrupos: ['5.1 Ruido', '5.2 Vehículos con motor de encendido por chispa',
      '5.3 Vehículos con motor de encendido por compresión', '5.4 Recopilación de datos OBFCM'] },
   ];
+  http: any;
 
   constructor(
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef  // Inyecta ChangeDetectorRef
+    private cdr: ChangeDetectorRef ,
+    private segundaFaseService: SegundafaseService // Inyecta ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.pruebaForm = this.fb.group({
+      numerobastidor: ['', Validators.required],
       combustible: ['', Validators.required],
       grupoInspeccion: ['', Validators.required],
       subgrupos: this.fb.array([])
@@ -59,7 +65,7 @@ export class SegundaFaseComponent implements OnInit {
   }
 
   iniciarPrueba(): void {
-    if (this.pruebaForm.invalid) {
+    if (this.pruebaForm.get('combustible')?.value === 'Empty') {
       console.log('Formulario no válido.');
       return; // Asegura que el formulario esté completo
     }
@@ -106,5 +112,43 @@ export class SegundaFaseComponent implements OnInit {
 
   actualizarUI(): void {
     this.cdr.detectChanges();  // Forzar la detección de cambios
+  }
+
+  onSubmit(): void {
+    if (this.pruebaForm.invalid) {
+      console.log('Formulario no válido.');
+      return; // Asegura que el formulario esté completo
+    }
+
+    const formValue = this.pruebaForm.value;
+
+    const payload = {
+      numerobastidor: formValue.numerobastidor,
+      combustible: formValue.combustible,
+      emisiones: this.emisiones,
+      subgrupos: {
+        grupo: this.getNombreGrupoPorId(parseInt(this.pruebaForm.get('grupoInspeccion')?.value)),
+        subgrupos: formValue.subgrupos.map((sg: any) => ({
+          nombre: sg.nombre,
+          defecto: sg.defecto
+        }))
+      }
+    };
+
+    console.log('Payload del formulario:', payload);
+
+    this.segundaFaseService.createSegundafase(payload).subscribe(
+      (response: any) => {
+        console.log('Datos guardados:', response);
+      },
+      (error: any) => {
+        console.error('Error guardando los datos:', error);
+      }
+    );
+  }
+
+  getNombreGrupoPorId(id: number): string {
+    const grupo = this.grupos.find(grupo => grupo.id === id);
+    return grupo ? grupo.nombre : '';
   }
 }
