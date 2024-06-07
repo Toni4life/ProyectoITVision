@@ -3,8 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,4 +19,8 @@ export class PrimerafaseService {
     });
   }
 
+  // Nuevo método para obtener la primera fase por número de bastidor
+  getPrimerafase(numerobastidor: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${numerobastidor}`);
+  }
 }

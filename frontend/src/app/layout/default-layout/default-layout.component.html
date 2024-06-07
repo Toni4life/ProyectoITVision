@@ -8,19 +8,18 @@
 >
   <c-sidebar-header class="border-bottom">
     <c-sidebar-brand [routerLink]="[]">
-      <svg [class]="{icon: false}" cIcon class="sidebar-brand-full" height="32" name="logo" title="CoreUI Logo"></svg>
-      <svg cIcon class="sidebar-brand-narrow" height="32" name="signet" title="CoreUI Logo"></svg>
+      <img src="assets/images/ITVision.png" class="sidebar-brand-full" height="36" alt="ITVision Logo">
+      <img src="assets/images/ITVision.png" class="sidebar-brand-narrow" height="40" alt="ITVision Logo">
     </c-sidebar-brand>
   </c-sidebar-header>
 
   <ng-scrollbar #scrollbar="ngScrollbar" (updated)="onScrollbarUpdate(scrollbar.state)" class="overflow" pointerEventsMethod="scrollbar" visibility="hover">
     <c-sidebar-nav #overflow [navItems]="navItems" dropdownMode="close" compact />
   </ng-scrollbar>
-  @if (!sidebar1.narrow) {
-    <c-sidebar-footer cSidebarToggle="sidebar1" class="border-top d-none d-lg-flex" toggle="unfoldable" style="cursor: pointer;">
-      <button cSidebarToggler></button>
-    </c-sidebar-footer>
-  }
+
+  <c-sidebar-footer cSidebarToggle="sidebar1" class="border-top d-none d-lg-flex" toggle="unfoldable" style="cursor: pointer;">
+    <button cSidebarToggler></button>
+  </c-sidebar-footer>
 </c-sidebar>
 
 <!--main-->
@@ -33,9 +32,9 @@
   <!--app-body-->
   <div class="body flex-grow-1">
     <c-container breakpoint="lg" class="h-auto px-4">
-      <router-outlet />
+      <router-outlet></router-outlet>
     </c-container>
   </div>
   <!--app footer-->
-  <app-default-footer />
+  <app-default-footer></app-default-footer>
 </div>

@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -21,4 +18,8 @@ export class TercerafaseService {
     });
   }
 
+  // Método para obtener la tercera fase por número de bastidor
+  getTercerafase(numerobastidor: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${numerobastidor}`);
+  }
 }

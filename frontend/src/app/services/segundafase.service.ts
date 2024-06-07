@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +10,10 @@ export class SegundafaseService {
 
   constructor(private http: HttpClient) {}
 
+  getSegundafase(numerobastidor: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${numerobastidor}`);
+  }
+
   createSegundafase(segundafase: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, segundafase, {
       headers: new HttpHeaders({
@@ -20,5 +21,4 @@ export class SegundafaseService {
       })
     });
   }
-
 }

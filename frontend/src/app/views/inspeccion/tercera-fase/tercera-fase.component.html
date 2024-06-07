@@ -1,79 +1,99 @@
-<!-- segunda-fase.component.html -->
 <c-row>
-    <c-col xs="12">
-        <c-card class="mb-4">
-            <c-card-header>
-                <strong>Prueba de Frenado - Tercera Fase</strong>
-            </c-card-header>
-            <c-card-body>
-                <form [formGroup]="pruebaForm" (ngSubmit)="onSubmit()">
-                    <div class="mb-3">
-                        <label for="numerobastidor" class="form-label">Número de Bastidor:</label>
-                        <input type="text" id="numerobastidor" class="form-control" formControlName="numerobastidor">
-                    </div>
-                    <!-- Selector del Eje de Frenado -->
-                    <div class="mb-3">
-                        <label for="frenos" class="form-label">Eje de Frenado:</label>
-                        <select id="frenos" class="form-control" formControlName="frenos">
-                            <option value="Empty">Seleccione un tipo</option>
-                            <option value="EjeDelantero">Eje Delantero</option>
-                            <option value="EjeTrasero">Eje Trasero</option>
-                        </select>
-                    </div>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header>
+        <strong>Prueba de Frenado - 3ª Fase de la Inspección</strong>
+        <c-badge *ngIf="faseCompletada" color="success" class="ms-2">Completada</c-badge>
+      </c-card-header>
+      <c-card-body>
+        <div class="floating-alert">
+          <!-- Alerta de éxito -->
+          <c-alert *ngIf="showSuccessAlert" color="success" class="d-flex align-items-center">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+              <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>Éxito al guardar</div>
+          </c-alert>
+    
+          <!-- Alerta de error -->
+          <c-alert *ngIf="showErrorAlert" color="danger" class="d-flex align-items-center">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:">
+              <use xlink:href="#exclamation-triangle-fill" />
+            </svg>
+            <div>Error al guardar</div>
+          </c-alert>
+        </div>
 
-                    <button type="button" class="btn btn-primary" (click)="iniciarPrueba()" [disabled]="simulando">
-                        Iniciar Prueba de Frenado
-                    </button>
+        <form [formGroup]="pruebaForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="numerobastidor" class="form-label">Número de Bastidor:</label>
+            <input type="text" id="numerobastidor" class="form-control" formControlName="numerobastidor" readonly>
+            <div *ngIf="pruebaForm.get('numerobastidor')?.invalid && pruebaForm.get('numerobastidor')?.touched" class="text-danger">
+              Número de Bastidor es requerido.
+            </div>
+          </div>
+          <div class="mb-3">
+            <button type="button" class="btn btn-primary" (click)="iniciarPrueba()" [disabled]="simulando">
+              Iniciar Prueba de Frenado
+            </button>
+          </div>
 
-                    <div class="mb-3">
-                        <!-- Contenido del div -->
-                    </div>
+          <div *ngIf="simulando" class="alert alert-info mt-3">
+            Simulación en progreso... Tiempo restante: {{ cuentaAtras }} segundos
+          </div>
 
-                    <!-- Estado de la simulación y resultado de las frenado -->
-                    <div *ngIf="simulando" class="alert alert-info mt-3">
-                        Simulación en progreso... Tiempo restante: {{ cuentaAtras }} segundos
-                    </div>
+          <div *ngIf="frenadoDelantero && frenadoTrasero && !simulando" class="alert alert-success mt-3">
+            Resultado de Frenado - Delantero: {{ frenadoDelantero }} unidades, Trasero: {{ frenadoTrasero }} unidades
+          </div>
 
-                    <div *ngIf="frenado && !simulando" class="alert alert-success mt-3">
-                        Resultado de Frenado: {{ frenado }} unidades
-                    </div>
+          <div class="mb-3">
+            <button type="button" class="btn btn-secondary" (click)="toggleSubgrupos()">
+              {{ mostrarSubgrupos ? 'Ocultar Grupo de Inspección' : 'Mostrar Grupo de Inspección' }}
+            </button>
+          </div>
 
-                    <!-- Selector de Grupo de Inspección se mueve aquí para aparecer después del botón -->
-                    <div class="mb-3">
-                        <label for="grupoInspeccion" class="form-label">Grupo de Inspección:</label>
-                        <select id="grupoInspeccion" class="form-control" formControlName="grupoInspeccion">
-                            <option *ngFor="let grupo of grupos" [value]="grupo.id">{{ grupo.nombre }}</option>
-                        </select>
-                    </div>
+          <div *ngIf="mostrarSubgrupos" formArrayName="subgrupos">
+            <div *ngFor="let subgrupoControl of subgrupos.controls; let i = index" [formGroupName]="i" class="mb-2">
+              <p>
+                <strong *ngIf="i === 0 || i === 24">{{ subgrupoControl.get('grupo')?.value }}</strong>
+              </p>
+              <label>{{ subgrupoControl.get('nombre')?.value }}</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="defecto" value="n/a">
+                <label class="form-check-label">N/A</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="defecto" value="leve">
+                <label class="form-check-label">Leve</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="defecto" value="grave">
+                <label class="form-check-label">Grave</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="defecto" value="muy grave">
+                <label class="form-check-label">Muy Grave</label>
+              </div>
+            </div>
+          </div>
 
-                    <!-- Dentro de tu formulario, ajusta el formArrayName a 'subgrupos' -->
-                    <div formArrayName="subgrupos">
-                        <div *ngFor="let subgrupoControl of subgrupos.controls; let i = index" [formGroupName]="i"
-                            class="mb-2">
-                            <label>{{ subgrupoControl.get('nombre')?.value }}</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" formControlName="defecto" value="n/a">
-                                <label class="form-check-label">N/A</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" formControlName="defecto" value="leve">
-                                <label class="form-check-label">Leve</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" formControlName="defecto" value="grave">
-                                <label class="form-check-label">Grave</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" formControlName="defecto"
-                                    value="muy grave">
-                                <label class="form-check-label">Muy Grave</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </form>
-            </c-card-body>
-        </c-card>
-    </c-col>
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" (click)="nextPhase()" class="btn btn-secondary">Siguiente Fase</button>
+          </div>
+        </form>
+      </c-card-body>
+    </c-card>
+  </c-col>
 </c-row>
+
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path
+      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+  </symbol>
+  <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+    <path
+      d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+  </symbol>
+</svg>

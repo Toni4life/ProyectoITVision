@@ -28,5 +28,12 @@ export const routes: Routes = [
     data: {
       title: 'Register Page'
     }
+  },
+  {
+    path: 'datos-usuario-itv',
+    loadComponent: () => import('./datos-usario-itv/datos-usario-itv.component').then(m => m.DatosUsuarioITVComponent),
+    data: {
+      title: 'datos-usuario-itv'
+    }
   }
 ];

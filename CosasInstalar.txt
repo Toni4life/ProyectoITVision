@@ -1,0 +1,20 @@
+Para que funcione bien y demas:
+frontend:
+npm install file-saver
+npm install ngx-cookie-service        //almaceno el usuario en cookies 
+
+backend
+npm install pdfkit    //generar pdf
+npm install bcrypt                      //encriptar contraseñas
+
+si hay problemas con las rutas de servicios simplemente borren:
+import { LoginService } from '../../../services/login.service'; EJEMPLO
+e importenlo donde salga en rojito. Si no sale nada, haganlo a mano. ESTOS SERVICIOS SE ENCUENTRAN EN LA CARPETA SERVICE,
+SOLO ES PONER LA RUTA BIEN Y YA
+
+usuarios- contraseña- rol
+gian 123  usuario
+antonio 12345 admin
+guillermo 12345 admin
+rey24 123 usuario  //sin coches
+francisco 123456 usuario //sin coches

@@ -1,18 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { VehicleService } from '../../../services/vehicle.service';
+import { VehicleService } from '../../../vehicle.service';
 import { PrimerafaseService } from '../../../services/primerafase.service';
-import { Vehicle } from '../../../interfaces/vehicle.interface';
+import { Vehicle } from '../../../services/vehicle.interface';
 import {
   RowComponent,
   ColComponent,
   CardComponent,
   CardHeaderComponent,
   CardBodyComponent,
-  ButtonDirective
+  ButtonDirective,
+  AlertComponent,
+  BadgeComponent
 } from '@coreui/angular';
 import { HttpClientModule } from '@angular/common/http';
+import { IconDirective } from '@coreui/icons-angular';
 
 @Component({
   selector: 'app-primera-fase',
@@ -28,12 +32,18 @@ import { HttpClientModule } from '@angular/common/http';
     CardComponent,
     CardHeaderComponent,
     CardBodyComponent,
-    ButtonDirective
+    ButtonDirective,
+    AlertComponent,
+    IconDirective,
+    BadgeComponent
   ]
 })
 export class PrimeraFaseComponent implements OnInit {
   vehiculoForm!: FormGroup;
   vehicleId: number | null = null;
+  showSuccessAlert: boolean = false;
+  showErrorAlert: boolean = false;
+  faseCompletada: boolean = false;
   grupos = [
     { id: 1, nombre: 'Grupo 1: Identificación', subgrupos: ['1.1 Documentación', '1.2 Número de Bastidor', '1.3 Placa de Matrícula'] },
     {
@@ -55,12 +65,18 @@ export class PrimeraFaseComponent implements OnInit {
         '4.16 Luces de circulación diurna']
     }
   ];
-subgruposControls: any;
 
   constructor(
     private fb: FormBuilder,
     private vehicleService: VehicleService,
-    private primeraFaseService: PrimerafaseService  ) { }
+    private primeraFaseService: PrimerafaseService,
+    private router: Router,
+  ) { }
+  public mostrarSubgrupos: boolean = false;
+
+  toggleSubgrupos() {
+    this.mostrarSubgrupos = !this.mostrarSubgrupos;
+  }
 
   ngOnInit(): void {
     this.vehiculoForm = this.fb.group({
@@ -71,17 +87,9 @@ subgruposControls: any;
       normativaeuro: ['', Validators.required],
       aniofabricacion: ['', Validators.required],
       kilometraje: ['', Validators.required],
-      grupoInspeccion: ['', Validators.required],
-      subgrupos: this.fb.array([])
+      fecha: ['', Validators.required],
+      subgrupos: this.fb.array(this.initAllSubgrupos())  // Inicializa todos los subgrupos
     });
-
-    // Asegúrate de que el control existe antes de suscribirte a sus cambios
-    const grupoInspeccionControl = this.vehiculoForm.get('grupoInspeccion');
-    if (grupoInspeccionControl) {
-      grupoInspeccionControl.valueChanges.subscribe(groupId => {
-        this.updateSubgrupos(groupId);
-      });
-    }
 
     this.vehicleService.currentVehicle.subscribe((vehicle: Vehicle) => {
       if (vehicle) {
@@ -92,7 +100,24 @@ subgruposControls: any;
           combustible: vehicle.combustible,
           normativaeuro: vehicle.normativaeuro,
           aniofabricacion: vehicle.aniofabricacion,
-          kilometraje: ''  // El kilometraje se deja en blanco para nueva entrada
+          kilometraje: ''
+        });
+        this.loadPhaseData(vehicle.numerobastidor); // Cargar datos de la fase
+      }
+    });
+  }
+
+  loadPhaseData(numerobastidor: string): void {
+    this.primeraFaseService.getPrimerafase(numerobastidor).subscribe(response => {
+      if (response) {
+        this.faseCompletada = true;  // Marca la fase como completada si hay datos
+        this.vehiculoForm.patchValue({
+          kilometraje: response.km,
+          fecha: response.fecha,
+          subgrupos: response.subgrupos.subgrupos.map((sg: any) => ({
+            nombre: sg.nombre,
+            defecto: sg.defecto
+          }))
         });
       }
     });
@@ -119,13 +144,16 @@ subgruposControls: any;
   onSubmit(): void {
     if (this.vehiculoForm.invalid) {
       console.log('Formulario no válido.');
+      this.showErrorAlert = true;
+      setTimeout(() => this.showErrorAlert = false, 2000);  // Ocultar alerta después de 2 segundos
       return;
     }
-  
+
     const formValue = this.vehiculoForm.value;
-  
+
     const payload = {
       numerobastidor: formValue.numerobastidor,
+      fecha: formValue.fecha,
       km: formValue.kilometraje,
       subgrupos: {
         grupo: this.getNombreGrupoPorId(parseInt(this.vehiculoForm.get('grupoInspeccion')?.value)),
@@ -137,19 +165,55 @@ subgruposControls: any;
     };
 
     console.log('Payload:', payload);
-  
+
     this.primeraFaseService.createPrimerafase(payload).subscribe(
       (response: any) => {
         console.log('Datos guardados:', response);
+        this.showSuccessAlert = true;
+        this.faseCompletada = true;  // Marca la fase como completada después de guardar
+        setTimeout(() => {
+          this.showSuccessAlert = false;
+          this.router.navigate(['/inspeccion/segunda-fase'], {
+            state: { numeroBastidor: formValue.numerobastidor }
+          });
+        }, 2000);  // Esperar 2 segundos antes de navegar a la siguiente fase
       },
       (error: any) => {
         console.error('Error guardando los datos:', error);
+        this.showErrorAlert = true;
+        setTimeout(() => this.showErrorAlert = false, 2000);  // Ocultar alerta después de 2 segundos
       }
     );
+  }
+
+  nextPhase(): void {
+    if (this.vehiculoForm.invalid) {
+      console.log('Formulario no válido.');
+      return;
+    }
+
+    this.router.navigate(['/inspeccion/segunda-fase'], {
+      state: { numeroBastidor: this.vehiculoForm.value.numerobastidor }
+    });
   }
 
   getNombreGrupoPorId(id: number): string {
     const grupo = this.grupos.find(grupo => grupo.id === id);
     return grupo ? grupo.nombre : '';
+  }
+
+  // Función para inicializar todos los subgrupos
+  initAllSubgrupos(): FormGroup[] {
+    let allSubgrupos: FormGroup[] = [];
+    this.grupos.forEach(grupo => {
+      grupo.subgrupos.forEach(subgrupo => {
+        allSubgrupos.push(this.fb.group({
+          grupo: [grupo.nombre],  // Agrega el nombre del grupo para referencia
+          nombre: [subgrupo],
+          defecto: ['', Validators.required]
+        }));
+      });
+    });
+    return allSubgrupos;
   }
 }

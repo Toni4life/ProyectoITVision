@@ -4,33 +4,174 @@
       <c-col lg="7" md="9" xl="6">
         <c-card class="mx-4">
           <c-card-body class="p-4">
-            <form cForm>
-              <h1>Register</h1>
-              <p class="text-body-secondary">Create your account</p>
+            <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+              <h1>Registro</h1>
+              <p class="text-body-secondary">Crea tu cuenta</p>
+              
               <c-input-group class="mb-3">
                 <span cInputGroupText>
                   <svg cIcon name="cilUser"></svg>
                 </span>
-                <input autoComplete="name" cFormControl placeholder="Username" />
+                <input
+                  name="usuario"
+                  [(ngModel)]="usuario"
+                  cFormControl
+                  placeholder="Nombre de usuario"
+                  autoComplete="username"
+                  required
+                />
               </c-input-group>
+              
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilUser"></svg>
+                </span>
+                <input
+                  name="nombre"
+                  [(ngModel)]="nombre"
+                  cFormControl
+                  placeholder="Nombre"
+                  autoComplete="given-name"
+                  required
+                />
+              </c-input-group>
+              <div *ngIf="!validNombreApellido(nombre) && nombre.trim() !== ''" class="text-danger mb-3">
+                El nombre solo puede contener letras.
+              </div>
+
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilUser"></svg>
+                </span>
+                <input
+                  name="apellidos"
+                  [(ngModel)]="apellidos"
+                  cFormControl
+                  placeholder="Apellidos"
+                  autoComplete="family-name"
+                  required
+                />
+              </c-input-group>
+              <div *ngIf="!validNombreApellido(apellidos) && apellidos.trim() !== ''" class="text-danger mb-3">
+                Los apellidos solo pueden contener letras.
+              </div>
+
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilCalendar"></svg>
+                </span>
+                <input
+                  name="fechaNacimiento"
+                  [(ngModel)]="fechaNacimiento"
+                  cFormControl
+                  placeholder="Fecha de nacimiento"
+                  type="date"
+                  autoComplete="bday"
+                  required
+                />
+              </c-input-group>
+              <div *ngIf="!validFechaNacimiento(fechaNacimiento) && fechaNacimiento.trim() !== ''" class="text-danger mb-3">
+                La fecha de nacimiento no puede ser posterior a la fecha actual.
+              </div>
+
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilCreditCard"></svg>
+                </span>
+                <input
+                  name="dni"
+                  [(ngModel)]="dni"
+                  cFormControl
+                  placeholder="DNI"
+                  autoComplete="off"
+                  required
+                />
+              </c-input-group>
+              <div *ngIf="!validDNI(dni) && dni.trim() !== ''" class="text-danger mb-3">
+                El DNI debe tener 8 números seguidos de una letra mayúscula.
+              </div>
+
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilPhone"></svg>
+                </span>
+                <input
+                  name="telefono"
+                  [(ngModel)]="telefono"
+                  cFormControl
+                  placeholder="Número de teléfono"
+                  type="tel"
+                  autoComplete="tel"
+                  required
+                />
+              </c-input-group>
+              <div *ngIf="!validTelefono(telefono) && telefono.trim() !== ''" class="text-danger mb-3">
+                El teléfono debe tener 9 dígitos y comenzar con 6 o 7.
+              </div>
+
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilHome"></svg>
+                </span>
+                <input
+                  name="direccion"
+                  [(ngModel)]="direccion"
+                  cFormControl
+                  placeholder="Dirección"
+                  autoComplete="street-address"
+                  required
+                />
+              </c-input-group>
+
               <c-input-group class="mb-3">
                 <span cInputGroupText>&#64;</span>
-                <input autoComplete="email" cFormControl placeholder="Email" />
+                <input
+                  name="email"
+                  [(ngModel)]="email"
+                  cFormControl
+                  placeholder="Correo electrónico"
+                  autoComplete="email"
+                  type="email"
+                  required
+                  email
+                />
               </c-input-group>
+              <div *ngIf="registerForm.controls['email']?.invalid && registerForm.controls['email']?.touched" class="text-danger mb-3">
+                Por favor, introduce un correo electrónico válido.
+              </div>
+
               <c-input-group class="mb-3">
                 <span cInputGroupText>
                   <svg cIcon name="cilLockLocked"></svg>
                 </span>
-                <input autoComplete="new-password" cFormControl placeholder="Password" type="password" />
+                <input
+                  name="contrasenia"
+                  [(ngModel)]="contrasenia"
+                  cFormControl
+                  placeholder="Contraseña"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                />
               </c-input-group>
+
               <c-input-group class="mb-4">
                 <span cInputGroupText>
                   <svg cIcon name="cilLockLocked"></svg>
                 </span>
-                <input autoComplete="new-password" cFormControl placeholder="Repeat password" type="password" />
+                <input
+                  name="repetirContrasenia"
+                  [(ngModel)]="repetirContrasenia"
+                  cFormControl
+                  placeholder="Repetir contraseña"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                />
               </c-input-group>
+
               <div class="d-grid">
-                <button cButton color="success">Create Account</button>
+                <button cButton color="success" type="submit">Crear cuenta</button>
               </div>
             </form>
           </c-card-body>

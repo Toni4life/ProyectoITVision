@@ -1,0 +1,107 @@
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-4">
+      <c-card-header class="d-flex justify-content-between align-items-center">
+        <strong>Datos del Cliente</strong>
+        <button cButton color="danger" (click)="cerrarSesion()">Cerrar Sesión</button>
+      </c-card-header>
+      <c-card-body>
+        <div *ngIf="datosCliente">
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <th>Nombre</th>
+                <td>{{ datosCliente.nombre }}</td>
+              </tr>
+              <tr>
+                <th>Apellidos</th>
+                <td>{{ datosCliente.apellidos }}</td>
+              </tr>
+              <tr>
+                <th>Fecha de Nacimiento</th>
+                <td>{{ obtenerFechaFormateada(datosCliente.fecha_nacimiento) }}</td>
+              </tr>
+              <tr>
+                <th>DNI</th>
+                <td>{{ datosCliente.dni }}</td>
+              </tr>
+              <tr>
+                <th>Número de Teléfono</th>
+                <td>{{ datosCliente.numero_telefono }}</td>
+              </tr>
+              <tr>
+                <th>Cantidad de Coches</th>
+                <td>{{ datosCliente.cantidad_coches }}</td>
+              </tr>
+              <tr>
+                <th>Dirección</th>
+                <td>{{ datosCliente.direccion }}</td>
+              </tr>
+              <tr>
+                <th>Correo Electrónico</th>
+                <td>{{ datosCliente.correo_electronico }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button cButton color="primary" (click)="cargarVehiculos()">{{ vehiculosCargados ? 'Ocultar Vehículos' : 'Cargar Vehículos' }}</button>
+          <div *ngIf="vehiculosCargados">
+            <h5 class="mt-4">Vehículos del Cliente</h5>
+            <div *ngIf="vehiculos.length > 0; else noVehiculos">
+              <ul class="list-group">
+                <li *ngFor="let vehiculo of vehiculos" class="list-group-item">
+                  <table class="table table-bordered">
+                    <tbody>
+                      <tr>
+                        <th>Número de Bastidor</th>
+                        <td>{{ vehiculo.numerobastidor }}</td>
+                      </tr>
+                      <tr>
+                        <th>Marca</th>
+                        <td>{{ vehiculo.marca }}</td>
+                      </tr>
+                      <tr>
+                        <th>Modelo</th>
+                        <td>{{ vehiculo.modelo }}</td>
+                      </tr>
+                      <tr>
+                        <th>Tara</th>
+                        <td>{{ vehiculo.tara }}</td>
+                      </tr>
+                      <tr>
+                        <th>Medida Neumáticos</th>
+                        <td>{{ vehiculo.medidaneumaticos }}</td>
+                      </tr>
+                      <tr>
+                        <th>Dimensiones</th>
+                        <td>{{ vehiculo.dimensiones }}</td>
+                      </tr>
+                      <tr>
+                        <th>Combustible</th>
+                        <td>{{ vehiculo.combustible }}</td>
+                      </tr>
+                      <tr>
+                        <th>Normativa Euro</th>
+                        <td>{{ vehiculo.normativaeuro }}</td>
+                      </tr>
+                      <tr>
+                        <th>Año de Fabricación</th>
+                        <td>{{ vehiculo.aniofabricacion }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <button *ngIf="tieneInforme(vehiculo)" cButton color="info" (click)="verInspeccion(vehiculo)">Ver Inspección</button>
+                </li>
+              </ul>
+            </div>
+            <ng-template #noVehiculos>
+              <p>Este cliente no dispone de ningún vehículo registrado.</p>
+            </ng-template>
+          </div>
+        </div>
+        <div *ngIf="!datosCliente">
+          <p>Cargando datos del cliente...</p>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

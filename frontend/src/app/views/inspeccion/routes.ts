@@ -39,13 +39,6 @@ export const routes: Routes = [
         data: {
           title: '4ª Fase'
         }
-      },
-      {
-        path: 'final-fase',
-        loadComponent: () => import('./final-fase/final-fase.component').then(m => m.FinalFaseComponent),
-        data: {
-          title: 'Fase Final'
-        }
       }
     ]
   }
