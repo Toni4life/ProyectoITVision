@@ -18,3 +18,7 @@ antonio 12345 admin
 guillermo 12345 admin
 rey24 123 usuario  //sin coches
 francisco 123456 usuario //sin coches
+amg password123 usuario //sin coches
+Juan.Pérez contraseña usuario 
+resto de usuarios password123
+Ap 123 usuario //sin coches
