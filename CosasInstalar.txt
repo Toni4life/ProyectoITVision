@@ -1,4 +1,3 @@
-Para que funcione bien y demas:
 frontend:
 npm install file-saver
 npm install ngx-cookie-service        //almaceno el usuario en cookies 
