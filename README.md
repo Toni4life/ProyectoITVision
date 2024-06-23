@@ -21,3 +21,7 @@ La base del diseño de la interfaz de usuario está construida sobre Core UI, pr
 
 ## Contacto
 Para más información, puedes contactarme en [antonio.m.gonzalez29@gmail.com] o en [LinkedIn](https://www.linkedin.com/in/antonio-mu%C3%B1oz-gonz%C3%A1lez/).
+
+## Licencia
+Este proyecto está licenciado bajo la Licencia MIT - mira el archivo [LICENSE](LICENSE) para más detalles.
+
